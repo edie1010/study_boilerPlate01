@@ -47,4 +47,28 @@ app.post("/register", (req, res) => {
     });
 });
 
+app.post("/login", async (req, res) => {
+  const user = new User(req.body);
+  const user2 = await User.findOne({ email: req.body.email });
+  if (!user2) {
+    return res.json({
+      loginSuccess: false,
+      message: "제공된 이메일에 해당하는 유저가 없습니다",
+    });
+  }
+  user2.comparePassword(req.body.password, (err, isMatch) => {
+    if (!isMatch) {
+      return res.json({ loginSuccess: false, message: "틀렸어" });
+    }
+
+    user2.genToken((err, user) => {
+      if (err) return res.status(400).send(err);
+      res
+        .cookie("x_auth", user.token)
+        .status(200)
+        .json({ loginSuccess: true, userId: user._id });
+    });
+  });
+});
+
 app.listen(port, () => console.log(`Example app listening on port ${port}`));
