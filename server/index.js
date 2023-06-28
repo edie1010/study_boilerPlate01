@@ -1,5 +1,5 @@
 const express = require("express");
-
+const cors = require("cors");
 const app = express();
 const port = 5000;
 
@@ -7,6 +7,9 @@ const config = require("./config/key");
 const { User } = require("./models/User");
 const bodyPaser = require("body-parser");
 const cookieParser = require("cookie-parser");
+
+//모든 도메인
+app.use(cors());
 
 //application/x-www-form-urlencoded 분석해서 가져오게끔 처리
 app.use(bodyPaser.urlencoded({ extended: true }));
@@ -26,6 +29,10 @@ mongoose
   .catch((err) => console.log("fail"));
 
 app.get("/", (req, res) => res.send("안녕하세요 허허허 피곤하다..."));
+
+app.get("/api/hello", (req, res) => {
+  res.send("안녕하세요");
+});
 
 app.post("/api/users/register", (req, res) => {
   //회원가입할떄 필요한 정보들을 clinet에서 가져오면
@@ -103,6 +110,8 @@ app.get("/api/users/logout", auth, (req, res) => {
   //     });
   //   }
   // );
+
+  console.log("req", req);
 
   User.findOneAndUpdate(
     { _id: req.user._id },

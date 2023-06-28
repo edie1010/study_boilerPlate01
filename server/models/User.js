@@ -61,7 +61,7 @@ userSchema.methods.genToken = function (cb) {
   var user = this;
   var token = jwt.sign(user._id.toHexString(), "dddddd");
   user.token = token;
-  console.log(user.token);
+  //console.log(user.token);
   user
     .save()
     .then((userInfo) => {
@@ -82,7 +82,7 @@ userSchema.statics.findByToken = function (token, cb) {
     user
       .findOne({ _id: decode, token: token })
       .then((user) => {
-        console.log(user);
+        //console.log(user);
         cb(null, user);
       })
       .catch((err) => {
